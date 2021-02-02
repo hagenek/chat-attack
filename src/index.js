@@ -16,17 +16,19 @@ io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 
   socket.emit("message", "Welcome!");
-  socket.broadcast.emit("message", "A new user has joined!");
+  socket.broadcast.emit("message", "** a new user has joined **");
 
-  socket.on("sendMessage", (message) => {
+  socket.on("sendMessage", (message, cb) => {
     io.emit("message", message);
+    cb("Received!!")
   });
 
-  socket.on("sendLocation", (location) => {
+  socket.on("sendLocation", (location, cb) => {
     io.emit(
       "message",
       `https://google.com/maps?q=${location.latitude},${location.longitude}`
     );
+    cb("Location shared!")
   });
 
   socket.on("disconnect", () => {
