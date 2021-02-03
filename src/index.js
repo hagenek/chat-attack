@@ -24,8 +24,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendLocation", (location, cb) => {
+    console.log("loc received");
     io.emit(
-      "message",
+      "location",
       `https://google.com/maps?q=${location.latitude},${location.longitude}`
     );
     cb("Location shared!")

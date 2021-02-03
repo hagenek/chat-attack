@@ -15,6 +15,9 @@ socket.on("message", (message) => {
   $messages.insertAdjacentHTML('beforeEnd', html)
 });
 
+socket.on("location", (loc) => {
+  console.log(loc);
+});
 
 $msgForm.onsubmit = (e) => {
 
@@ -35,17 +38,21 @@ $msgForm.onsubmit = (e) => {
 };
 
 
-$locationBtn.onclick = () => {
+$locationBtn.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+        return alert('Geolocation is not supported by your browser')
+    }
 
-  if (!navigator.geolocation) {
-    return alert("Geolocation is not supported by your browser");
-  }
+    $locationBtn.setAttribute('disabled', 'disabled')
 
-  navigator.geolocation.getCurrentPosition((position) => {
-    console.log(position);
-    socket.emit("sendLocation", {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    }, (serverMessage) => console.log(serverMessage));
-  });
-};
+    navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position)
+        socket.emit('sendLocation', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        }, () => {
+            $locationBtn.removeAttribute('disabled')
+            console.log('Location shared!')
+        })
+    })
+})
