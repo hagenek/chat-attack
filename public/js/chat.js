@@ -10,15 +10,27 @@ const $messages = document.querySelector("#messages");
 const $msgTplate = document.querySelector("#msg-tplate").innerHTML;
 const $locationTemplate = document.querySelector("#locationTemplate").innerHTML;
 
+// Options
+
+const { username, room } = qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+
 socket.on("message", (message) => {
   console.log(message);
-  const html = Mustache.render($msgTplate, { message });
+  const html = Mustache.render($msgTplate, {
+    createdAt: moment(message.createdAt).format("hh:mm:ss"),
+    message: message.text,
+  });
   $messages.insertAdjacentHTML("beforeEnd", html);
 });
 
 socket.on("location", (loc) => {
   console.log(loc);
-  const html = Mustache.render($locationTemplate, { loc });
+  const html = Mustache.render($locationTemplate, {
+    url: loc.location,
+    createdAt: moment(loc.createdAt).format("hh:mm:ss"),
+  });
   $messages.insertAdjacentHTML("beforeEnd", html);
 });
 
@@ -60,3 +72,5 @@ $locationBtn.addEventListener("click", () => {
     );
   });
 });
+
+socket.emit("join", { username, room });

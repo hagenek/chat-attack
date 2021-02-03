@@ -1,39 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <head>
+  <head>
+    <title>Chat App</title>
+    <link rel="icon" href="/img/favicon.png" class="icon" />
+    <link rel="stylesheet" href="/css/styles.min.css" />
+  </head>
+  <body>
+    <div class="centered-form">
+      <div class="centered-form__box">
+        <h1>Join</h1>
+        <form action="/chat.html">
+          <label for="">Display name</label>
+          <input type="text" name="username" placeholder="Username" required />
 
-    </head>
-    <body>
-        <h1>Chat App</h1>
-        <h3>Write here and everyone will see it!</h3>
-        <h5>(That's connected at least..)</h5>
+          <label for="">Room</label>
+          <input type="text" name="room" placeholder="Room" required />
 
-        <div id="messages">
-        </div>
-
-        <form id="message-form">
-            <input id="input" name="message" placeholder="Message">
-            <button>Send message</button>
+          <button>Join</button>
         </form>
-        <br>
-        <button style="color: #fff; padding: 20px 26px; background-color: blueviolet;" id="send-location">Share your location!</button>
-
-
-        <script id="msg-tplate" type="text/html">
-            <div>
-                <p>{{message}}</p></div>
-        </script>
-        <script id="locationTemplate" type="text/html">
-            <div>
-                <a href={{loc}}>Location is here</a>
-            </div>
-        </script>
-
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.6/qs.min.js" integrity="sha512-3TmPrquYLaAsUmZKXRARTDC5siWhLAdBVqNo4dWpDABBtLU62AaoTaQJEvjxjExcZYurO6i1dnK85k8pPIBlRg==" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.1.0/mustache.min.js" integrity="sha512-HYiNpwSxYuji84SQbCU5m9kHEsRqwWypXgJMBtbRSumlx1iBB6QaxgEBZHSHEGM+fKyCX/3Kb5V5jeVXm0OglQ==" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/chat.js"></script>
-    </body>
+      </div>
+    </div>
+  </body>
 </html>
