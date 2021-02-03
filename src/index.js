@@ -15,12 +15,15 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 
-  socket.emit("message", "Welcome!");
-  socket.broadcast.emit("message", "** a new user has joined **");
+  socket.emit("message", { text: "Welcome!", createdAt: Date().getTime() });
+  socket.broadcast.emit("message", {
+    text: "** a new user has joined **",
+    createdAt: Date().getTime(),
+  });
 
   socket.on("sendMessage", (message, cb) => {
     io.emit("message", message);
-    cb("Received!!")
+    cb("Received!!");
   });
 
   socket.on("sendLocation", (location, cb) => {
@@ -29,7 +32,7 @@ io.on("connection", (socket) => {
       "location",
       `https://google.com/maps?q=${location.latitude},${location.longitude}`
     );
-    cb("Location shared!")
+    cb("Location shared!");
   });
 
   socket.on("disconnect", () => {
