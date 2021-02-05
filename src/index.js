@@ -33,13 +33,13 @@ io.on("connection", (socket) => {
     console.log("room: ", user.room);
     socket.join(user.room);
 
-    socket.emit("message", createMessage("Welcome!"));
+    socket.emit("message", createMessage("Admin", "Welcome!"));
 
     socket.broadcast
       .to(user.room)
       .emit(
         "message",
-        createMessage(`${user.username} just joined the chat! =)`)
+        createMessage("Admin", `${user.username} just joined the chat! =)`)
       );
 
     callback();
