@@ -7,31 +7,33 @@ const $msgFormBtn = document.querySelector("#message-form > button");
 const $msgForm = document.querySelector("#message-form");
 const $chatInput = document.querySelector("#input");
 const $messages = document.querySelector("#messages");
-const $msgTplate = document.querySelector("#msg-tplate").innerHTML;
+const msgTplate = document.querySelector("#msg-tplate").innerHTML;
 const $locationTemplate = document.querySelector("#locationTemplate").innerHTML;
 
 // Options
 
-const { username, room } = qs.parse(location.search, {
+const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
 socket.on("message", (message) => {
   console.log(message);
-  const html = Mustache.render($msgTplate, {
+  const html = Mustache.render(msgTplate, {
+    username: message.username,
     createdAt: moment(message.createdAt).format("hh:mm:ss"),
     message: message.text,
   });
-  $messages.insertAdjacentHTML("beforeEnd", html);
+  $messages.insertAdjacentHTML("beforeend", html);
 });
 
 socket.on("location", (loc) => {
   console.log(loc);
   const html = Mustache.render($locationTemplate, {
-    url: loc.location,
+    username: loc.username,
+    url: loc.text,
     createdAt: moment(loc.createdAt).format("hh:mm:ss"),
   });
-  $messages.insertAdjacentHTML("beforeEnd", html);
+  $messages.insertAdjacentHTML("beforeend", html);
 });
 
 $msgForm.onsubmit = (e) => {
@@ -73,4 +75,9 @@ $locationBtn.addEventListener("click", () => {
   });
 });
 
-socket.emit("join", { username, room });
+socket.emit("join", { username, room }, (error) => {
+  if (error) {
+    alert(error);
+    location.href = "/";
+  }
+});

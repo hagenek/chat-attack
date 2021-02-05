@@ -1,7 +1,8 @@
 const { text } = require("express");
 
-const createMessage = (text) => ({
-  text: text,
+const createMessage = (username, text) => ({
+  username,
+  text,
   createdAt: new Date().getTime(),
 });
 

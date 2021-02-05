@@ -3,6 +3,12 @@ const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
 const { createMessage } = require("./utils/messages");
+const {
+  addUser,
+  getUser,
+  removeUser,
+  getUserByRoom,
+} = require("./utils/users");
 
 const app = express();
 const server = http.createServer(app);
@@ -16,29 +22,41 @@ app.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 
-  socket.on("join", ({ username, room }) => {
-    socket.join(room);
+  socket.on("join", (options, callback) => {
+    const { user, error } = addUser({ id: socket.id, ...options });
+    console.log(user);
+
+    if (error) {
+      return callback(error);
+    }
+
+    console.log("room: ", user.room);
+    socket.join(user.room);
 
     socket.emit("message", createMessage("Welcome!"));
 
     socket.broadcast
-      .to(room)
-      .emit("message", createMessage(`${username} just joined the chat! =)`));
+      .to(user.room)
+      .emit(
+        "message",
+        createMessage(`${user.username} just joined the chat! =)`)
+      );
 
-    // socket.emit, io.emit, socket.broadcast.emit`
-    // io.to.emit, socket.broadcast.to.emit
+    callback();
   });
 
   socket.on("sendMessage", (message, cb) => {
-    io.emit("message", createMessage(message));
+    const user = getUser(socket.id);
+    io.to(user.room).emit("message", createMessage(user.username, message));
     cb("Received!!");
   });
 
   socket.on("sendLocation", (location, cb) => {
-    console.log("loc received");
-    io.emit(
+    const user = getUser(socket.id);
+    io.to(user.room).emit(
       "location",
       createMessage(
+        user.username,
         `https://google.com/maps?q=${location.latitude},${location.longitude}`
       )
     );
@@ -46,7 +64,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    io.emit("message", createMessage("A user has left!"));
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit(
+        "message",
+        createMessage(user.username + " has left!")
+      );
+    }
   });
 });
 
